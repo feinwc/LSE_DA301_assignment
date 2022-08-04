@@ -9,9 +9,9 @@ To understand the relationships between loyalty points (dependable variable) and
 # Assignment activity 2: Make predictions with clustering
 
 The clustering algorithm was applied to identify groups with the given data – game marketing. Firstly, the scatterplot and pair plot were used to understand the distribution of the dataset. The result shows that most data points are showing overlapped by each other. However, we can still identify 5 clusters in the plot. Interestingly, education was input as hues, but the result shows that it seems not the ideal attribute to cluster the dataset. Afterwards, the elbow and Silhouette methods were investigated to improve the accuracy and define the k cluster number. The outcome demonstrates that 5 clusters are ideal, which aligned with the distribution of the scatterplot and pair plot. Lastly, the visualisation was built and there are clearly 5 clusters to be interpreted. Based on the attribute of the 5 clusters, we can identify new market segmentation (listed as below) and better target customers. 
-•	Cluster Black: low remuneration and high spending-score
-•	Cluster Yellow: low remuneration and low spending-score
-•	Cluster Red: middle remuneration and spending-score
-•	Cluster Blue: high remuneration and high spending-score
-•	Cluster Green: high remuneration and low spending-score
+- Cluster Black: low remuneration and high spending-score
+-	Cluster Yellow: low remuneration and low spending-score
+-	Cluster Red: middle remuneration and spending-score
+-	Cluster Blue: high remuneration and high spending-score
+-	Cluster Green: high remuneration and low spending-score
 
