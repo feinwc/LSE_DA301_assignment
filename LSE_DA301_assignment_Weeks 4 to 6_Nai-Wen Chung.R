@@ -101,52 +101,28 @@ qplot(Global_Sales, bins=5, data=turtle_sales_2)
 qplot(NA_Sales, data=turtle_sales_2, geom='boxplot')
 qplot(EU_Sales, data=turtle_sales_2, geom='boxplot')
 qplot(Global_Sales, data=turtle_sales_2, geom='boxplot')
+
 ###############################################################################
 
-# 3. Determine the impact on sales per product_id.
-
-## 3a) Use the group_by and aggregate functions.
-# Group data based on Product and determine the sum per Product.
-global_sales_by_product <- aggregate(turtle_sales_2$Global_Sales, by=list(Product=turtle_sales_2$Product), FUN=sum)
-# NA plus EU sales.
-na_eu_sales_by_product <- aggregate(cbind(turtle_sales_2$NA_Sales,turtle_sales_2$EU_Sales), by=list(Product=turtle_sales_2$Product), FUN=sum)
-na_eu_sales_by_product <- mutate(sales_by_product, na_eu_sales=V1+V2)
-
-# View the data frame.
-View(na_eu_sales_by_product)
-View(Global_sales_by_product)
-
-# Explore the data frame.
-summary(na_eu_sales_by_product)
-summary(Global_sales_by_product)
-
-## 3b) Determine which plot is the best to compare game sales.
-# Create scatterplots.
-NA_EU_scatter <- qplot(Product, na_eu_sales, data=na_eu_sales_by_product)
-NA_EU_scatter + scale_x_continuous(breaks=seq(100, 10000, 500))
-
-Global_scatter <- qplot(Product, x, data=Global_sales_by_product)
-Global_scatter + scale_x_continuous(breaks=seq(100, 10000, 500))
-
-# Create histograms.
-qplot(na_eu_sales, data=na_eu_sales_by_product)
-qplot(x, data=Global_sales_by_product)
-
-# Create boxplots.
-qplot(na_eu_sales, data=na_eu_sales_by_product, geom='boxplot')
-qplot(x, data=Global_sales_by_product, geom='boxplot')
-###############################################################################
-
-# 4. Observations and insights
+# 3. Observations and insights
 
 ## Your observations and insights here ......
-Based on the scatter plots, three regions tend to have a slight negative relationship between product ID and sales, explaining that the greater the ID is, the lower the sales are. This is interesting as customer behaviour seems to have some similarities across the three regions. Product ID smaller than 5,000 seems more popular than product ID greater than 5,000. The histograms and plot boxes show that the distribution is skewed across the three regions, the majority of the clients spend between 0K to 5K in each region. To compare global sales in North America (NA) and Europe (EU), the aggregation function was applied and the result shows that the preference of the customer in NA and EU are similar to the global customers as the product ID smaller than 5,000 are both more popular. The histograms and box plots demonstrate that the purchasing power of the customer in NA and EU are slightly higher than global customers. The finding explains that Asian markets are highly potential. The deeper investigation of customer behaviour and the enhancement/improvement of marketing campaigns in Asia is worth to invest to penetrate the market.
-
-
+# The summary, min, max, and mean functions were applied to understand the 
+# descriptive statistics of the data. Based on the scatter plots, the three 
+# regions tend to have a slight negative relationship between product ID and 
+# sales, explaining that the greater the ID is, the lower the sales are. This 
+# is interesting as customer behaviour seems to have a similar trend across the 
+# three regions. Product ID smaller than 5,000 seems to be more popular than 
+# product ID greater than 5,000. The histograms and plot boxes demonstrate that 
+# the distribution is skewed across the three regions. There are some visible 
+# outliers and 50% of the customers in NA spend approximately 0.5K to 3.1K, the 
+# customers in EU spend only 0.4 to 2.1K, whilst global customers spend around 
+# 1K - 6K. The result shows that more marketing campaigns that can be considered 
+# in Europe and other regions are highly potential as they contributed a 
+# significant portion of global sales.
 
 ###############################################################################
 ###############################################################################
-
 
 # Week 5 assignment: Cleaning and maniulating data using R
 
@@ -162,15 +138,24 @@ Based on the scatter plots, three regions tend to have a slight negative relatio
 ##  - View the data frame to sense-check the data set.
 ##  - Determine the `min`, `max` and `mean` values of all the sales data.
 ##  - Create a summary of the data frame.
-# 2. Determine the normality of the data set.
+# 2. Determine the impact on sales per product_id.
+##  - Use the group_by and aggregate functions to sum the values grouped by
+##      product.
+##  - Create a summary of the new data frame.
+# 3. Create plots to review and determine insights into the data set.
+##  - Create scatterplots, histograms, and boxplots to gain insights into 
+##     the Sales data.
+##  - Note your observations and diagrams that could be used to provide 
+##     insights to the business.
+# 4. Determine the normality of the data set.
 ##  - Create and explore Q-Q plots for all sales data.
 ##  - Perform a Shapiro-Wilk test on all the sales data.
 ##  - Determine the Skewness and Kurtosis of all the sales data.
 ##  - Determine if there is any correlation between the sales data columns.
-# 3. Create plots to gain insights into the sales data.
+# 5. Create plots to gain insights into the sales data.
 ##  - Compare all the sales data (columns) for any correlation(s).
 ##  - Add a trend line to the plots for ease of interpretation.
-# 4. Include your insights and observations.
+# 6. Include your insights and observations.
 
 ################################################################################
 
@@ -178,54 +163,165 @@ Based on the scatter plots, three regions tend to have a slight negative relatio
 
 # View data frame created in Week 4.
 
+# Install and import Tidyverse.
+library('tidyverse')
+
+# Import the data set.
+turtle_sales <- read.csv(file.choose(), header=T)
+
+# Print the data frame.
+head(turtle_sales)
+
+# Create a new data frame from a subset of the sales data frame - have created "turtle_sales" above.
+# Remove unnecessary columns. 
+turtle_sales_2 <- select(turtle_sales, -Ranking, -Year, -Genre, -Publisher)
 
 # Check output: Determine the min, max, and mean values.
+min(turtle_sales_2$NA_Sales)
+max(turtle_sales_2$NA_Sales)
+mean(turtle_sales_2$NA_Sales)
 
+min(turtle_sales_2$EU_Sales)
+max(turtle_sales_2$EU_Sales)
+mean(turtle_sales_2$EU_Sales)
+
+min(turtle_sales_2$Global_Sales)
+max(turtle_sales_2$Global_Sales)
+mean(turtle_sales_2$Global_Sales)
 
 # View the descriptive statistics.
-
+summary(turtle_sales_2)
 
 ###############################################################################
 
-# 2. Determine the normality of the data set.
+# 2. Determine the impact on sales per product_id.
 
-## 2a) Create Q-Q Plots
+## 2a) Use the group_by and aggregate functions.
+# Group data based on Product and determine the sum per Product.
+global_sales_by_product <- aggregate(turtle_sales_2$Global_Sales, by=list(Product=turtle_sales_2$Product), FUN=sum)
+# NA plus EU sales.
+na_eu_sales_by_product <- aggregate(cbind(turtle_sales_2$NA_Sales,turtle_sales_2$EU_Sales), by=list(Product=turtle_sales_2$Product), FUN=sum)
+na_eu_sales_by_product <- mutate(na_eu_sales_by_product, na_eu_sales=V1+V2)
+
+# View the data frame.
+View(na_eu_sales_by_product)
+View(global_sales_by_product)
+
+# Explore the data frame.
+summary(na_eu_sales_by_product)
+summary(Global_sales_by_product)
+
+## 2b) Determine which plot is the best to compare game sales.
+# Create scatterplots.
+NA_EU_scatter <- qplot(Product, na_eu_sales, data=na_eu_sales_by_product)
+NA_EU_scatter + scale_x_continuous(breaks=seq(100, 10000, 500))
+
+Global_scatter <- qplot(Product, x, data=global_sales_by_product)
+Global_scatter + scale_x_continuous(breaks=seq(100, 10000, 500))
+
+# Create histograms.
+qplot(na_eu_sales, data=na_eu_sales_by_product)
+qplot(x, data=global_sales_by_product)
+
+# Create boxplots.
+qplot(na_eu_sales, data=na_eu_sales_by_product, geom='boxplot')
+qplot(x, data=global_sales_by_product, geom='boxplot')
+
+###############################################################################
+
+# 3. Determine the normality of the data set.
+
+## 3a) Create Q-Q Plots
 # Create Q-Q Plots.
+qqnorm(global_sales_by_product$x)
+qqline(global_sales_by_product$x, col='red')
 
+qqnorm(na_eu_sales_by_product$na_eu_sales)
+qqline(na_eu_sales_by_product$na_eu_sales, col='red')
 
-
-## 2b) Perform Shapiro-Wilk test
+## 3b) Perform Shapiro-Wilk test
 # Install and import Moments.
-
+library(moments)
 
 # Perform Shapiro-Wilk test.
+shapiro.test(global_sales_by_product$x)
+shapiro.test(na_eu_sales_by_product$na_eu_sales)
+# as p-value is well above 0.05, and we can conclude normal distribution
 
-
-
-## 2c) Determine Skewness and Kurtosis
+## 3c) Determine Skewness and Kurtosis
 # Skewness and Kurtosis.
 
+skewness(global_sales_by_product$x)
+kurtosis(global_sales_by_product$x)
+skewness(na_eu_sales_by_product$na_eu_sales)
+kurtosis(na_eu_sales_by_product$na_eu_sales)
 
-
-## 2d) Determine correlation
+## 3d) Determine correlation
 # Determine correlation.
-
+cor(global_sales_by_product$x, global_sales_by_product$Product)
+# The correlation coefficient of -0.61 suggests a negative correlation.
+cor(na_eu_sales_by_product$na_eu_sales, na_eu_sales_by_product$Product)
+# The correlation coefficient of -0.56 suggests a negative correlation.
 
 ###############################################################################
 
-# 3. Plot the data
+# 4. Plot the data
 # Create plots to gain insights into data.
+# Choose the type of plot you think best suits the data set and what you want 
+# to investigate. Explain your answer in your report.
 
+# Global:
+ggplot(global_sales_by_product,
+       mapping=aes(x=Product, y=x)) +
+  geom_point(color='pink',
+             alpha=0.75,
+             size=2.5) +
+  scale_x_continuous(breaks=seq(100, 10000, 500), "Product ID") +
+  scale_y_continuous(breaks=seq(0, 100, 10), "Global Sales (in £k)") +
+  labs(title="Global Sales (in £k) by Product ID",
+       subtitle="A Survey from Sales Team of Turtle games, FY22") +
+  theme_dark()
 
+# NA + EU:
+ggplot(na_eu_sales_by_product,
+       mapping=aes(x=Product, y=na_eu_sales)) +
+  geom_point(color='beige',
+             alpha=0.75,
+             size=2.5) +
+  scale_x_continuous(breaks=seq(100, 10000, 500), "Product ID") +
+  scale_y_continuous(breaks=seq(0, 100, 10), "Sales in NA + EU (in £k)") +
+  labs(title="Sales in NA + EU (in £k) by Product ID",
+       subtitle="A Survey from Sales Team of Turtle games, FY22") +
+  theme_dark()
 ###############################################################################
 
-# 4. Observations and insights
+# 5. Observations and insights
 # Your observations and insights here...
 
+# To compare global sales with North America (NA) and Europe (EU), the 
+# aggregation function was applied. The result displays that the customer 
+# preference in NA and EU are similar to the global customers as the product ID 
+# smaller than 5,000 are both more popular. The histograms and box plots 
+# demonstrate that the purchasing power of the customer in NA and EU can be 
+# encouraged. Also, the finding explains that Eastern markets can be highly 
+# potential as they also contributed to global sales. The deeper investigation 
+# of customer behaviour and the enhancement/improvement of marketing campaigns 
+# are worth to invest to penetrate more markets. The result of the Q-Q plots and
+# the Shapiro test explains the data is normally distributed. However, the 
+# skewness is greater than 3, showing that the data is high and positive skewed 
+# (right-skewed) and heavy-tiled(leptokurtic). Both figures for kurtosis are 
+# quite high (greater than 3), indicating that the data has heavier tails than 
+# a normal distribution. The correlation coefficient (of -0.61 in global sales 
+# and of -0.56 in NA+EU sales) suggests negative correlations. Finally, two 
+# scatter plots were applied to understand the relationship between product ID 
+# and sales. It’s interesting to find the global trend is quite similar to the 
+# trend in NA+EU regions, which explains that the customer may have similar 
+# customer behaviour, preference or attitudes towards Turtle games. The marketing 
+# team can execute mass marketing strategies to acquire more customers in 
+# different regions to extend the market.
 
 ###############################################################################
 ###############################################################################
-
 # Week 6 assignment: Making recommendations to the business using R
 
 ## The sales department wants to better understand if there is any relationship
